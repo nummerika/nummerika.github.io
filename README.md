@@ -1,5 +1,3 @@
-# nummerika.github.io
-<!DOCTYPE html>
 <html lang="id" class="scroll-smooth">
 
 <head>
