@@ -231,7 +231,7 @@
 
             // URL dari Google Apps Script Web App Anda
             // PASTE URL SCRIPT ANDA DI SINI
-            const googleAppsScriptURL = 'https://script.google.com/macros/s/AKfycbwqdC_hP_vX_Z2_x3_2-o_f-J-y_s-F-u-g-e-o/exec';
+            const googleAppsScriptURL = 'https://script.google.com/macros/s/AKfycbwruU6wdxH8HWORQa_kR-OVGSXADUFCXzlLPdpyNsFU/dev';
             
             submitBtn.textContent = 'Mengirim...';
             submitBtn.disabled = true;
