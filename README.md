@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <html lang="id" class="scroll-smooth">
 
 <head>
@@ -239,7 +240,7 @@
         const statusMessage = document.getElementById('status-message');
 
         // GANTI DENGAN URL WEB APP ANDA DARI LANGKAH 3
-        const googleAppsScriptURL = 'https://script.google.com/macros/s/AKfycbzdIAgHKCM5Jf9s_8X0n9mdfBSBZPHpyOJLRPPKZTwWqygTva8TJg8PThialhYnSBCasw/exec';
+        const googleAppsScriptURL = 'https://script.google.com/macros/s/AKfycbwruU6wdxH8HWORQa_kR-OVGSXADUFCXzlLPdpyNsFU/dev';
 
         form.addEventListener('submit', function(event) {
             event.preventDefault(); // Mencegah form dari refresh halaman
@@ -250,14 +251,10 @@
             statusMessage.classList.add('text-yellow-500');
 
             const formData = new FormData(form);
-            const data = Object.fromEntries(formData.entries());
 
             fetch(googleAppsScriptURL, {
                 method: 'POST',
-                body: JSON.stringify(data),
-                headers: {
-                    'Content-Type': 'application/json'
-                }
+                body: formData
             })
             .then(response => {
                 if (response.ok) {
