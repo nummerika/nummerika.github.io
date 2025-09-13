@@ -178,7 +178,8 @@
                     Isi formulir di bawah ini dan tim kami akan segera menghubungi Anda.
                 </p>
                 <div class="bg-white p-8 md:p-12 rounded-xl shadow-lg max-w-lg mx-auto">
-                    <form action="#" method="POST" class="space-y-6">
+                    <!-- Form dengan ID -->
+                    <form id="contact-form" class="space-y-6">
                         <div>
                             <label for="name" class="block text-sm font-medium text-gray-700 text-left">Nama Lengkap</label>
                             <input type="text" id="name" name="name"
@@ -197,11 +198,13 @@
                                 class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500 text-gray-800"
                                 placeholder="Pesan Anda" required></textarea>
                         </div>
-                        <button type="submit"
+                        <button type="submit" id="submit-button"
                             class="w-full bg-indigo-600 text-white font-bold py-3 px-4 rounded-lg shadow-md hover:bg-indigo-700 transition duration-300">
                             Kirim Pesan
                         </button>
                     </form>
+                    <!-- Loading & Success Message -->
+                    <div id="status-message" class="mt-4 text-center font-bold"></div>
                 </div>
             </div>
         </section>
@@ -226,6 +229,61 @@
         document.getElementById('mobile-menu-button').addEventListener('click', function() {
             var menu = document.getElementById('mobile-menu');
             menu.classList.toggle('hidden');
+        });
+
+        // =================================================================
+        // Skrip untuk mengirim data formulir ke Google Sheets
+        // =================================================================
+        const form = document.getElementById('contact-form');
+        const submitButton = document.getElementById('submit-button');
+        const statusMessage = document.getElementById('status-message');
+
+        // GANTI DENGAN URL WEB APP ANDA DARI LANGKAH 3
+        const googleAppsScriptURL = 'https://script.google.com/macros/s/AKfycbzdIAgHKCM5Jf9s_8X0n9mdfBSBZPHpyOJLRPPKZTwWqygTva8TJg8PThialhYnSBCasw/exec';
+
+        form.addEventListener('submit', function(event) {
+            event.preventDefault(); // Mencegah form dari refresh halaman
+            
+            // Tampilkan pesan loading dan nonaktifkan tombol
+            submitButton.disabled = true;
+            statusMessage.textContent = 'Mengirim pesan...';
+            statusMessage.classList.add('text-yellow-500');
+
+            const formData = new FormData(form);
+            const data = Object.fromEntries(formData.entries());
+
+            fetch(googleAppsScriptURL, {
+                method: 'POST',
+                body: JSON.stringify(data),
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then(response => {
+                if (response.ok) {
+                    return response.text();
+                }
+                throw new Error('Terjadi kesalahan saat mengirim pesan.');
+            })
+            .then(text => {
+                if (text === 'Success') {
+                    statusMessage.textContent = 'Pesan berhasil terkirim! Tim kami akan segera menghubungi Anda.';
+                    statusMessage.classList.remove('text-yellow-500', 'text-red-500');
+                    statusMessage.classList.add('text-green-500');
+                    form.reset(); // Reset form
+                } else {
+                    throw new Error('Respon tidak valid dari server.');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                statusMessage.textContent = 'Gagal mengirim pesan. Silakan coba lagi.';
+                statusMessage.classList.remove('text-yellow-500', 'text-green-500');
+                statusMessage.classList.add('text-red-500');
+            })
+            .finally(() => {
+                submitButton.disabled = false;
+            });
         });
     </script>
 </body>
