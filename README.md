@@ -196,11 +196,10 @@
                         </div>
                         <div class="flex justify-center">
                             <button type="submit" id="submitBtn" class="w-full md:w-auto bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-8 rounded-full shadow-lg transition-colors duration-300">
-                                Kirim Pesan
+                                Kirim Pesan via WhatsApp
                             </button>
                         </div>
                     </form>
-                    <div id="statusMessage" class="mt-4 text-center text-sm font-medium hidden"></div>
                 </div>
             </div>
         </section>
@@ -220,58 +219,29 @@
         </div>
     </footer>
 
-    <!-- JavaScript untuk Form Submission -->
+    <!-- JavaScript untuk Form Submission ke WhatsApp -->
     <script>
         document.getElementById('contactForm').addEventListener('submit', function(e) {
             e.preventDefault();
 
-            const form = e.target;
-            const statusMessage = document.getElementById('statusMessage');
-            const submitBtn = document.getElementById('submitBtn');
+            // Ganti dengan nomor WhatsApp Anda (dengan kode negara, tanpa + atau 00)
+            const phoneNumber = '6281390898868'; 
 
-            // URL dari Google Apps Script Web App Anda
-            // PASTE URL SCRIPT ANDA DI SINI
-            const googleAppsScriptURL = 'https://script.google.com/macros/s/AKfycbwruU6wdxH8HWORQa_kR-OVGSXADUFCXzlLPdpyNsFU/dev';
-            
-            submitBtn.textContent = 'Mengirim...';
-            submitBtn.disabled = true;
-            statusMessage.textContent = '';
-            statusMessage.classList.add('hidden');
+            const name = document.getElementById('name').value;
+            const email = document.getElementById('email').value;
+            const message = document.getElementById('message').value;
 
-            const data = {
-                name: form.name.value,
-                email: form.email.value,
-                message: form.message.value
-            };
+            // Format pesan untuk WhatsApp
+            const waMessage = `Halo NUMMERIKA, saya ingin bertanya tentang kursus.\n\nNama: ${name}\nEmail: ${email}\n\nPesan: ${message}`;
 
-            fetch(googleAppsScriptURL, {
-                method: 'POST',
-                mode: 'no-cors',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(data),
-            })
-            .then(response => {
-                // Karena mode: 'no-cors', kita tidak bisa memeriksa respons.
-                // Asumsi pengiriman berhasil jika tidak ada error jaringan.
-                submitBtn.textContent = 'Terkirim!';
-                submitBtn.disabled = false;
-                form.reset();
-                statusMessage.textContent = 'Pesan Anda berhasil terkirim! Kami akan segera menghubungi Anda.';
-                statusMessage.classList.remove('hidden');
-                statusMessage.classList.remove('text-red-600');
-                statusMessage.classList.add('text-green-600');
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                submitBtn.textContent = 'Kirim Pesan';
-                submitBtn.disabled = false;
-                statusMessage.textContent = 'Terjadi kesalahan saat mengirim pesan. Silakan coba lagi.';
-                statusMessage.classList.remove('hidden');
-                statusMessage.classList.remove('text-green-600');
-                statusMessage.classList.add('text-red-600');
-            });
+            // Encode pesan agar aman untuk URL
+            const encodedMessage = encodeURIComponent(waMessage);
+
+            // Buat URL WhatsApp
+            const waURL = `https://wa.me/${phoneNumber}?text=${encodedMessage}`;
+
+            // Buka di tab baru
+            window.open(waURL, '_blank');
         });
     </script>
 </body>
